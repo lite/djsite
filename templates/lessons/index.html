@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+
+{% block content %}
+
+<div class="blockform"> 
+<div class="box"> 
+  <div class="postleft"> 
+    <h1>{% trans "Lesson" %}</h1> 
+  </div>
+  <div class="postright"> 
+  <h1>{%trans "History" %}</h1>
+    {% if packages %}
+      {% for package in packages %}
+        <h2>{{ package.date }}</h2> 
+        <p>
+          <div class="postmsg"> 
+          {{ package.summary }}
+          <br/>
+          <table>
+            <thead>
+              <tr><td>{%trans "Lesson" %}</td><td>{% trans "Version" %}</td></tr>
+            </thead>
+            <tbody>
+            {% for lesson in package.lessons %}
+      				<tr><td><a href="{{ lesson.link }}">{{ lesson.summary }}</a></td><td>{{ lesson.version }}</td></tr>
+      			{% endfor %}
+      			<tbody>
+      		</table>
+      		</div>
+  		  </p>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+</div>
+
+{% endblock %}

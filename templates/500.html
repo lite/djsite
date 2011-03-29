@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+
+{% block content %}
+
+	<div id="h_align">
+
+		<div id="content">
+			<table class="p404" cellspacing="0" cellpadding="0">
+			<tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan="3"><img style="margin: 0px 0px 0px 15px;" src="{{ MEDIA_URL }}forum/img/logo.png" /></td>
+			</tr>
+			<tr>
+
+				<td width="50"></td>
+				<td><h1>{% trans "Error 500" %}</h1></td>
+				<td width="50"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><h3>{% trans "Internal server error." %}</h3></td>
+				<td></td>
+
+			</tr>
+			<tr>
+				<td></td>
+				<td><p>{% trans "There is a problem with the resource you are looking for, and it cannot be displayed." %}</p>
+			<p><a href="{% url jsjtbb:index %}">{% trans "Back home" %}</a></p>
+			</td>
+				<td></td>
+			</tr>
+
+			<tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+			</table>	
+		</div>
+	</div>
+
+{% endblock %}

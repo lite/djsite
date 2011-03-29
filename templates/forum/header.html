@@ -1,0 +1,63 @@
+{% load forum_extras %}
+{% load i18n %}
+
+<div id="jsjtbbwrap">
+<div id="jsjtbbindex" class="jsjtbb">
+<div id="brdheader" class="block">
+	<div class="box">
+		<div id="brdtitle" class="inbox">
+			<h1><span><a href="/">{% trans "Jsjt" %}</a></span></h1>
+		</div>
+		<div id="brdmenu" class="inbox">
+			<ul>
+				<li><a href="/" rel="self">{% trans "Home" %}</li>
+				<li><a href="/news/" rel="self">{% trans "News" %}</li>
+        <li><a href="/lessons/" rel="self">{% trans "Lessons" %}</li>
+        <li><a href="/contacts/" rel="self">{% trans "Contacts" %}</li>
+        <li><a href="/location/" rel="self">{% trans "Marker" %}</li>
+        <li><a href="/ranking/" rel="self">{% trans "Ranking" %}</li>
+        <li><a href="/forum/" rel="self">{% trans "Forum" %}</li>
+        {% if request.user.is_authenticated %}
+        <li><a href="{% url accounts:logout %}">{% trans "Logout" %}</a></li>
+        {% else %}
+        <li><a href="{% url accounts:login %}">{% trans "Login" %}</a></li>
+        <li><a href="{% url accounts:register %}">{% trans "Register" %}</a></li>
+        {% endif %}
+			</ul>
+		</div>
+		<div id="brdwelcome" class="inbox">
+			<ul class="conl">
+				{% if user.is_authenticated %}
+					<li>{% trans "Logged in as" %} <strong>{{ user.username }}</strong></li>
+					<li>{% trans "Last visit:" %} {% forum_time user.last_login %}</li>
+					{% if forum_settings.PM_SUPPORT and request.user|pm_unreads %}
+						<ul><li class="pmlink"><strong><a href="{% url messages_inbox %}">{% blocktrans with request.user|pm_unreads as new_msg %} There are new messages ({{ new_msg }}){% endblocktrans %}</a></strong></li></ul>
+					{% endif %}
+				{% else %}
+					<li>{% trans "You are not logged in." %}</li>
+				{% endif %}
+				{% if user.is_superuser and reports %}
+					<li class="reportlink"><strong><a href="{% url admin:index %}">{% trans "There are new reports" %} ({% new_reports %})</a></strong></li>
+				{% endif %}
+			</ul>
+			{% if user.is_authenticated %}
+				<ul class="conr">
+					<li><a href="{% url jsjtbb:search %}?action=show_new">{% trans "Show new posts since last visit" %}</a></li>
+					<li><a href="{% url jsjtbb:misc %}?action=markread">{% trans "Mark all topics as read" %}</a></li>
+				</ul>
+			{% endif %}
+			<div class="clearer"></div>
+		</div>
+	</div>
+</div>
+
+{% if forum_settings.NOTICE %}
+<div id="announce" class="block">
+	<h2><span>{% trans "Notice" %}</span></h2>
+	<div class="box">
+		<div class="inbox">
+			<div>{{ forum_settings.NOTICE }}</div>
+		</div>
+	</div>
+</div>
+{% endif %}

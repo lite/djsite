@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+	
+{% block extra_meta %}
+<script type="text/javascript" src="/static/js/jquery-1.4.3.min.js"></script> 
+<script type="text/javascript"> 
+$(document).ready(function(){  
+	is_stop = false;
+	do_refresh();
+});
+
+function do_refresh() {
+	setTimeout(function() {
+		if (!is_stop){
+  		  var noCache = Date();
+		    $.getJSON("/api/location/",  { "noCache": noCache },
+          function(data){
+            $('#markers').find('li').remove();
+            if (data){
+              $.each(data.markers, function(i,data_marker){
+                $("<a>").attr("href", "/location/marker/"+data_marker.id).text(data_marker.phone).appendTo("#markers").wrap("<li/>");
+              });
+            }
+          });
+			  do_refresh();
+    }
+	}, 5000);
+}
+</script> 
+{% endblock %}
+
+{% block content %}
+<div class="blockform"> 
+<div class="box">
+  <div class="postleft"> 
+    <h1>{% trans "Location" %}</h1> 
+  </div>
+  <div class="postright"> 
+  <a href="/location/addmarker/">{%trans "new" %}</a> <br/> 
+  <h1>{%trans "Latest 10" %}</h1>
+  <div class="postmsg"> 
+    <ol id="markers"/>
+    {% if markers %}
+        {% for marker in markers %}
+            <li><a href="{% url location:showmarker marker.id %}">{{marker.phone}}</a></li>
+      	{% endfor %}
+    {% endif %}
+    </ol>
+  </div>
+  </div>
+</div> 
+</div>
+{% endblock %}

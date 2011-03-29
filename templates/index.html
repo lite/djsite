@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+
+{% block content %}
+
+<div class="blockform"> 
+<div class="box">
+<div class="postleft">
+   <h1>{% trans "Home" %}</h1>  
+</div>
+<div class="postright"> 
+  <div class="postmsg">
+    <h1>{% trans "Welcome" %}</h1>
+    <p>{% trans "Jsjt has been providing independent tutoring service." %}</p>
+    <p>{% trans "Each of Jsjt's programs bears a trademark commitment to professional integrity, innovation, and excellence."%}</p>
+    <p>{% trans "Those were our core values when we first began, and they remain key to our success today." %}
+  </div>
+</div>
+</div>
+</div>
+
+{% endblock %}

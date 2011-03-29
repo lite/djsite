@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+
+{% block content %}
+
+<div class="blockform"> 
+<div class="box"> 
+  <div class="postleft"> 
+    <h1>{% trans "Location" %}</h1> 
+  </div>
+  <div class="postright"> 
+<a href="{% url location:index %}">{% trans "all markers" %}</a><br/>
+{% if user.is_authenticated %}
+    <form action="" method='POST'> 
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="{%  trans "save" %}" />
+    </form>
+{% else %}
+	{% trans "You are not logged in." %}
+	<a href="{% url accounts:login %}">{% trans "login" %}</a>
+{% endif %}
+</div>
+</div>
+</div>
+{% endblock %}
+

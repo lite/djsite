@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+
+{% block extra_meta %}
+<style type="text/css">
+select
+{
+  width:150px;
+}
+</style>
+<script type="text/javascript" src="/static/js/jquery-1.4.3.min.js"></script> 
+<script>
+$(document).ready(function(){
+  $("#school").change(function () {
+    school_id = $('#school').val()
+    $.getJSON("/api/accounts/profile/school/"+school_id,
+      function(data){
+        $('#grade').find('option').remove();
+        if (data){
+          $.each(data.grades, function(i,data_grade){
+            $("<option>").attr("value", data_grade.id).text(data_grade.name).appendTo("#grade");
+          });
+        }
+        $('#grade').change()
+      });
+    });
+
+  $("#grade").change(function () {
+    grade_id = $('#grade').val()
+    $.getJSON("/api/accounts/profile/grade/"+grade_id,
+      function(data){
+        $('#classes').find('option').remove();
+        if (data){
+          $.each(data.classess, function(i,data_classes){
+            $("<option>").attr("value", data_classes.id).text(data_classes.name).appendTo("#classes")
+          });
+        }
+        $('#classes').change()
+      });
+    });
+  
+  $("#classes").change(function () {
+    $("#classesid").attr("value", $('#classes').val());
+   });
+   
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="blockform"> 
+<div class="box"> 
+  {% if errors %}
+    <ul class="errorlist">
+    {% for err in errors %}
+      {{ err }}
+    {% endfor %}
+    </ul>
+  {% endif %}
+  
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <br/>
+    <label>{% trans "School" %}</label>
+    <select id="school">
+      <option value=""> {% trans "please select one school" %}</option>
+      {% if schools %}
+          {% for school in schools %}
+              <option value="{{ school.id }}"> {{ school.name }}</option>
+        	{% endfor %}
+      {% endif %}
+    </select><br/>
+    <label>{% trans "Grade" %}</label>
+    <select id="grade">
+    </select><br/>
+    <label>{% trans "Classes" %}</label>
+    <select id="classes">
+    </select><br/>
+    <input type="submit" value="{% trans "Register" %}"/>
+    <input type="hidden" name="classesid" id="classesid" value="" />
+    <input type="hidden" name="next" value="{{ NEXT }}" />
+    <a href="{%url accounts:login%}">{% trans "Login" %}</a>
+    
+  </form>
+</div>
+</div>
+
+{% endblock %}

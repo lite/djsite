@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+
+{% block extra_meta %}
+<style type="text/css">
+table
+{
+  width:40%;
+}
+
+select
+{
+  width:300px;
+}
+
+.td-mid
+{
+  width:5%
+}
+
+textarea
+{
+  width:60%;
+  height:200px;
+}
+
+</style>
+<script type="text/javascript" src="/static/js/jquery-1.4.3.min.js"></script> 
+<script>
+$(document).ready(function(){ 
+  $("#school").change(function () {
+    school_id = $('#school').val()
+    $.getJSON("/api/accounts/profile/school/"+school_id,
+      function(data){
+        $('#grade').find('option').remove();
+        if (data){
+          $.each(data.grades, function(i,data_grade){
+            $("<option>").attr("value", data_grade.id).text(data_grade.name).appendTo("#grade");
+          });
+        }
+        $('#grade').change()
+      });
+    });
+  
+  $("#grade").change(function () {
+    grade_id = $('#grade').val()
+    $.getJSON("/api/accounts/profile/grade/"+grade_id,
+      function(data){
+        $('#classes').find('option').remove();
+        if (data){
+          $.each(data.classess, function(i,data_classes){
+            $("<option>").attr("value", data_classes.id).text(data_classes.name).appendTo("#classes")
+          });
+        }
+        $('#classes').change()
+      });
+    });
+     
+  $("#classes").change(function () {
+      classes_id = $('#classes').val()
+      $.getJSON("/api/accounts/profile/classes/"+classes_id,
+       function(data){
+         if (data){
+           $('#contacts').find('option').remove();
+           $.each(data.profiles, function(i,data_profile){
+             $("<option>").attr("value", data_profile.mobile).text(data_profile.user.username).appendTo("#contacts")
+           });
+           $('#contacts').change()
+         }
+       });
+     });
+     
+   $("#add").click(function(){
+     if($("#contacts option:selected").length>0){
+       $("#contacts option:selected").each(function(){
+         $("<option>").attr("value", $(this).val()).text($(this).text() + " " + $(this).val()).appendTo("#receivers")
+       })
+     }
+   });
+     
+   $("#delete").click(function(){
+     if($("#receivers option:selected").length>0){
+       $("#receivers option:selected").each(function(){
+         $(this).remove();　
+       })
+     }
+    });
+    
+    {% if user.is_authenticated %}
+    $('#send').click(function() {
+      options = $("#receivers option")
+      receivers = new Array()
+      for(i=0; i<options.length; i++){
+           receivers[i] = options[i].value
+      }
+      message = $("#message").val()
+      $.post("/api/contacts/mesgsend", {"receivers":receivers, "message":message}, function(data){
+          if(data){
+            $("#resultmsg").find('li').remove()
+            if(data.status == 0){
+              $('#resultmsg').removeClass("errorlist");
+            }else{
+              $('#resultmsg').addClass("errorlist");
+            }
+            $('<li>').text(data.message).appendTo("#resultmsg")
+          }
+        }, "json");
+    });
+    {% endif %} 
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="blockform"> 
+<div class="box">
+  <div class="postleft">
+     <h1>{% trans "Contacts" %}</h1>  
+  </div>
+  <div class="postright"> 
+    <div class="postmsg"> 
+      <table>
+      <tr>
+        <td>
+          <label>{% trans "School" %}</label>
+          <select id="school">
+            <option value=""> {% trans "please select one school" %}</option>
+            {% if schools %}
+                {% for school in schools %}
+                    <option value="{{ school.id }}"> {{ school.name }}</option>
+              	{% endfor %}
+            {% endif %}
+          </select><br/>
+          <label>{% trans "Grade" %}</label>
+          <select id="grade">
+          </select><br/>
+          <label>{% trans "Classes" %}</label>
+          <select id="classes">
+          </select><br/><br/>
+          <select id="contacts" multiple="multiple"></select>
+        </td>
+        {% if user.is_authenticated %}
+        <td class="td-mid">
+          <input type="button" id="add" value=">>" /><br/>
+          <input type="button" id="delete" value="<<" />
+        </td>
+        <td>
+            <select id="receivers" multiple="multiple"></select>
+        </td>
+        {% endif %}
+      </tr>
+      </table>
+      <br/>
+      {% if user.is_authenticated %}
+        <textarea id="message" >{%trans "Enter your message here:" %}</textarea><br/>
+    	  <input type="submit" id="send" value="{%  trans "Send" %}" />
+    	  <br/>
+        <div><ul id="resultmsg"></ul></div>
+      {% else %}
+      	{% trans "You are not logged in." %}
+      	<a href="{% url accounts:login %}">{% trans "login" %}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}

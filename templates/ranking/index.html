@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+
+{% block content %}
+
+<div class="blockform"> 
+<div class="box"> 
+  <div class="postleft"> 
+    <h1>{% trans "Ranking" %}</h1> 
+  </div>
+  <div class="postright"> 
+  <h1>{%trans "Top 10" %}</h1>
+    {% if games %}
+      {% for game in games %}
+        <p>
+          <h2>{{ game.name }}</h2> <a href="{% url ranking:addscore game.id %}">{%trans "new"%}</a> <br/> 
+          <div class="postmsg"> 
+          <table>
+            <thead>
+              <tr><td>{%trans "Score" %}</td><td>{% trans "Player" %}</td><td>{% trans "Date" %}</td></tr>
+            </thead>
+            <tbody>
+            {% for score in game.scores %}
+      				<tr><td>{{ score.score }}</td><td>{{ score.player }}</td><td>{{ score.date }}</td></tr>
+      			{% endfor %}
+      			<tbody>
+      		</table>
+      		</div>
+  		  </p>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+</div>
+
+{% endblock %}

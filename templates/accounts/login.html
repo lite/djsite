@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+
+{% block extra_meta %}{% endblock %}
+
+{% block content %}
+
+<div class="blockform"> 
+<div class="box"> 
+  {% if errors %}
+    <ul class="errorlist">
+    {% for err in errors %}
+      {{ err }}
+    {% endfor %}
+    </ul>
+  {% endif %}
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <br/>
+    <input type="submit" value="{% trans "Login" %}"/>
+    <input type="hidden" name="next" value="{{ NEXT }}" />
+    <a href="{%url accounts:register %}">{% trans "Register" %}</a>
+  </form>
+</div>
+</div>
+{% endblock %}

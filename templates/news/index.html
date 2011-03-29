@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ section.title }}{% endblock %}
+	
+{% block extra_meta %}
+{% endblock %}
+   
+{% block content %}
+<div class="blockform"> 
+<div class="box">
+  <div class="postleft"> 
+    <h1>{% trans "News" %}</h1> 
+  </div>
+  <div class="postright"> 
+  <a href="/news/addreport/">{%trans "new" %}</a> <br/> 
+  {% if reports %}
+    {% for report in reports %}
+      <p>
+        <h1>{{ report.headline  }}</h1>
+        <div class="postmsg"> 
+          {{ report.reporter}} {{ repot.date}} <br/>
+          {{ report.content }}
+        </div>
+      </p>
+    {% endfor %}
+  {% endif %}
+  </div>
+</div> 
+</div>
+{% endblock %}
